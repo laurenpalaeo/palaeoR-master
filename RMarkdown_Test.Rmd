@@ -1,0 +1,44 @@
+---
+title: "Palaeo R_01102019"
+output: html_document
+bibliography: palaeoR.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>. In-text references are crap [@scott_1982].
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r Import_Pollen, echo=FALSE, results = "hide", message = FALSE}
+library("tidyverse")
+Wkr3 <- readxl::read_xls("data/wonderkrater1982pollen.xls", sheet = 'Wkr B3 Pollen Percentages', skip = 2)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r Plot_Pollen, echo=FALSE}
+Wkr4 <- Wkr3 %>% pivot_longer(-`Cal yr BP`, names_to = "species", values_to = "Percentages") %>% 
+  group_by(`species`) %>% 
+  filter(max(Percentages) > 10)
+
+g2 <- ggplot(Wkr4, aes(x = `Cal yr BP`, y = Percentages)) +
+  geom_area() +
+  labs(x = "Cal Yr BP", y = "Percent") +
+  theme_classic() + 
+  coord_flip() +
+  facet_wrap(~ species)
+
+g2
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+bibliography: palaeoR.bib
+csl: elsevier-harvard.csl
